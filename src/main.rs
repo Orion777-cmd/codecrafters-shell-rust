@@ -10,7 +10,11 @@ fn main() {
         let stdin = io::stdin();
         let mut input = String::new();
         stdin.read_line(&mut input).unwrap();
-        println!("{}: command not found", input.trim_end());
+
+        match input.trim().to_lowercase().as_str(){
+            "exit 0" => break,
+            _ => println!("{}: command not found", input.trim())
+        }
 
     }
 }
