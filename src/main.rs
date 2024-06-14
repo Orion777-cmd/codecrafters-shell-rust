@@ -10,10 +10,12 @@ fn main() {
         let stdin = io::stdin();
         let mut input = String::new();
         stdin.read_line(&mut input).unwrap();
-
-        match input.trim().to_lowercase().as_str(){
-            "exit 0" => break,
-            _ => println!("{}: command not found", input.trim())
+        let input = input.trim().to_string();
+        let mut splitted_input = input.split(' ');
+        match splitted_input.next().unwrap(){
+            "exit" => break,
+            "echo" => println!("{}", splitted_input.collect::<Vec<&str>>().join(" ")),
+            _ => println!("{}: command not found", input.trim_end())
         }
 
     }
