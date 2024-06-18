@@ -11,6 +11,7 @@ fn main() {
     commands.insert("type");
     commands.insert("echo");
     commands.insert("exit");
+    commands.insert("pwd");
     // Wait for user input
     loop {
         print!("$ ");
@@ -44,6 +45,10 @@ fn main() {
                     }
                 }
             },
+            "pwd" => {
+                let current_dir = env::current_dir().unwrap();
+                println!("{}", current_dir.display());
+            }
 
             command_str => {
                 let path_var = env::var_os("PATH").unwrap();
