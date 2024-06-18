@@ -1,6 +1,8 @@
 #[allow(unused_imports)]
 use std::io::{self, Write};
 use std::collections::HashSet;
+use std::env;
+// use std::path::Path;
 
 fn main() {
     
@@ -24,8 +26,21 @@ fn main() {
                 let next_part = splitted_input.next().unwrap();
                 if commands.contains(next_part){
                     println!("{} is a shell builtin", next_part.trim_end());
-                }else {
-                    println!("{}: not found", next_part.trim_end());
+                } else {
+                    let path_var = env::var_os("PATH").unwrap();
+                    let paths: Vec<_> = env::split_paths(&path_var).collect();
+                    let mut found = false;
+                    for path in paths {
+                        let command_path = path.join(next_part);
+                        if command_path.exists() {
+                            println!("{} is {}", next_part, command_path.display());
+                            found = true;
+                            break;
+                        }
+                    }
+                    if !found {
+                        println!("{}: not found", next_part.trim_end());
+                    }
                 }
             }
             _ => println!("{}: command not found", input.trim_end())
