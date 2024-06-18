@@ -2,7 +2,8 @@
 use std::io::{self, Write};
 use std::collections::HashSet;
 use std::env;
-// use std::path::Path;
+use std::process::Command;
+use std::path::PathBuf;
 
 fn main() {
     
@@ -42,8 +43,32 @@ fn main() {
                         println!("{}: not found", next_part.trim_end());
                     }
                 }
-            }
-            _ => println!("{}: command not found", input.trim_end())
+            },
+
+            command_str => {
+                let path_var = env::var_os("PATH").unwrap();
+                let paths: Vec<_> = env::split_paths(&path_var).collect();
+                let mut found = false;
+                let mut command_path = PathBuf::new();
+                let args: Vec<String> = splitted_input.map(|s| s.to_string()).collect();
+                for path in &paths {
+                    let potential_path = path.join(command_str);
+                    if potential_path.exists() {
+                        found = true;
+                        command_path = potential_path.clone();
+                        break;
+                    }
+                }
+                if found {
+                    let output = Command::new(command_path)
+                        .args(&args)
+                        .output()
+                        .expect("Failed to execute command");
+                    io::stdout().write_all(&output.stdout).unwrap();
+                } else {
+                    println!("{}: command not found", command_str.trim_end());
+                }
+            },
         }
 
     }
