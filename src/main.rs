@@ -4,6 +4,7 @@ use std::collections::HashSet;
 use std::env;
 use std::process::Command;
 use std::path::PathBuf;
+use std::fs;
 
 fn main() {
     
@@ -53,8 +54,9 @@ fn main() {
             "cd" => {
                 let next_part = splitted_input.next().unwrap();
                 let path = PathBuf::from(next_part);
-                if path.exists() {
-                    env::set_current_dir(&path).unwrap();
+                let canonical_path = fs::canonicalize(&path).unwrap_or_else(|_| path.clone());
+                if canonical_path.exists() {
+                    env::set_current_dir(&canonical_path).unwrap();
                 } else {
                     println!("cd: {}: No such file or directory", next_part);
                 }
