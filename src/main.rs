@@ -5,6 +5,7 @@ use std::env;
 use std::process::Command;
 use std::path::PathBuf;
 use std::fs;
+extern crate dirs;
 
 fn main() {
     
@@ -53,7 +54,12 @@ fn main() {
             },
             "cd" => {
                 let next_part = splitted_input.next().unwrap();
-                let path = PathBuf::from(next_part);
+                let mut path = PathBuf::from(next_part);
+                if path.starts_with("~"){
+                    if let Some(home_dir) = dirs::home_dir() {
+                    path = home_dir.join(path.strip_prefix("~").unwrap());
+                    }
+                }
                 let canonical_path = fs::canonicalize(&path).unwrap_or_else(|_| path.clone());
                 if canonical_path.exists() {
                     env::set_current_dir(&canonical_path).unwrap();
