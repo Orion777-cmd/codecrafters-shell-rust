@@ -12,6 +12,7 @@ fn main() {
     commands.insert("echo");
     commands.insert("exit");
     commands.insert("pwd");
+    commands.insert("cd");
     // Wait for user input
     loop {
         print!("$ ");
@@ -48,8 +49,16 @@ fn main() {
             "pwd" => {
                 let current_dir = env::current_dir().unwrap();
                 println!("{}", current_dir.display());
-            }
-
+            },
+            "cd" => {
+                let next_part = splitted_input.next().unwrap();
+                let path = PathBuf::from(next_part);
+                if path.exists() {
+                    env::set_current_dir(&path).unwrap();
+                } else {
+                    println!("cd: {}: No such file or directory", next_part);
+                }
+            },
             command_str => {
                 let path_var = env::var_os("PATH").unwrap();
                 let paths: Vec<_> = env::split_paths(&path_var).collect();
