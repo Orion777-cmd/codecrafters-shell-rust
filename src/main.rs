@@ -8,7 +8,7 @@ use std::fs;
 extern crate dirs;
 
 fn main() {
-    
+
     let mut commands: HashSet<&str> = HashSet::new();
     commands.insert("type");
     commands.insert("echo");
